@@ -1,32 +1,32 @@
 ﻿
-
 public class VendingMachine
 {
-    public string Name { get; set; }
-    public decimal CashBalance { get; private set; }
-    public int WaterStock { get; private set; }
-    public int CoffeeStock { get; private set; }
-    public int MilkStock { get; private set; }
-    public int SugarStock { get; private set; }
-    public decimal SalesTotal { get; private set; }
-
     public VendingMachine(string name, decimal initialCash, int initialWater, int initialCoffee, int initialMilk, int initialSugar)
     {
-        Name = name;
-        CashBalance = initialCash;
-        WaterStock = initialWater;
-        CoffeeStock = initialCoffee;
-        MilkStock = initialMilk;
-        SugarStock = initialSugar;
-        SalesTotal = 0;
+        name = name;
+        cashBalance = initialCash;
+        waterStock = initialWater;
+        coffeeStock = initialCoffee;
+        milkStock = initialMilk;
+        sugarStock = initialSugar;
+        salesTotal = 0;
     }
+
+    public string name { get; set; }
+    public decimal cashBalance { get; private set; }
+    public int waterStock { get; private set; }
+    public int coffeeStock { get; private set; }
+    public int milkStock { get; private set; }
+    public int sugarStock { get; private set; }
+    public decimal salesTotal { get; private set; }
+
 
     public void AcceptCoins(decimal amount)
     {
         if (amount > 0)
         {
-            CashBalance += amount;
-            Console.WriteLine($"Добавлено {amount:C}. Текущий баланс: {CashBalance:C}");
+            cashBalance += amount;
+            Console.WriteLine($"Добавлено {amount:C}. Текущий баланс: {cashBalance:C}");
         }
         else
         {
@@ -36,64 +36,106 @@ public class VendingMachine
 
     public decimal GiveChange(decimal amount)
     {
-        if (amount > CashBalance)
+        if (amount > cashBalance)
         {
             Console.WriteLine("Недостаточно наличных для выдачи сдачи.");
             return 0;
         }
 
-        CashBalance -= amount;
-        Console.WriteLine($"Выдана сдача: {amount:C}. Текущий баланс: {CashBalance:C}");
+        cashBalance -= amount;
+        Console.WriteLine($"Выдана сдача: {amount:C}. Текущий баланс: {cashBalance:C}");
         return amount;
     }
 
     // Метод для покупки американо
     public void BuyAmericano(bool addSugar)
     {
-        if (WaterStock < 1 || CoffeeStock < 1)
+        if (waterStock < 1 || coffeeStock < 1)
         {
             InformAboutIssues();
             return;
         }
 
-        WaterStock--;
-        CoffeeStock--;
-        SalesTotal += 2.50m; // Примерная цена
+        waterStock--;
+        coffeeStock--;
+        salesTotal += 2.50m;
 
-        if (addSugar && SugarStock > 0)
+        if (addSugar && sugarStock > 0)
         {
-            SugarStock--;
+            sugarStock--;
         }
 
-        Console.WriteLine("Куплен американо. Продажи: " + SalesTotal.ToString("C"));
+        Console.WriteLine("Куплен американо. Продажи: " + salesTotal.ToString("C"));
+    }
+    // Метод для покупки капучино
+    public void BuyCappuccino(bool addSugar)
+    {
+        if (waterStock < 1 || coffeeStock < 1 || milkStock < 1)
+        {
+            InformAboutIssues();
+            return;
+        }
+
+        waterStock--;
+        coffeeStock--;
+        milkStock--;
+        salesTotal += 3.00m;
+
+        if (addSugar && sugarStock > 0)
+        {
+            sugarStock--;
+        }
+
+        Console.WriteLine("Куплен капучино. Продажи: " + salesTotal.ToString("C"));
     }
 
-  
+    // Метод для покупки латте
+    public void BuyLatte(bool addSugar)
+    {
+        if (waterStock < 1 || coffeeStock < 1 || milkStock < 2)
+        {
+            InformAboutIssues();
+            return;
+        }
+
+        waterStock--;
+        coffeeStock--;
+        milkStock -= 2; // Латте требует больше молока
+        salesTotal += 3.50m;
+
+        if (addSugar && sugarStock > 0)
+        {
+            sugarStock--;
+        }
+
+        Console.WriteLine("Куплен латте. Продажи: " + salesTotal.ToString("C"));
+    }
+
 
     private void InformAboutIssues()
     {
-        if (CashBalance <= 0)
+        if (cashBalance <= 0)
             Console.WriteLine("Недостаточно наличных в автомате.");
 
-        if (WaterStock <= 0)
+        if (waterStock <= 0)
             Console.WriteLine("Вода закончилась.");
 
-        if (CoffeeStock <= 0)
+        if (coffeeStock <= 0)
             Console.WriteLine("Кофе закончилось.");
 
-        if (MilkStock <= 0)
+        if (milkStock <= 0)
             Console.WriteLine("Молоко закончилось.");
 
-        if (SugarStock <= 0)
+        if (sugarStock <= 0)
             Console.WriteLine("Сахар закончился.");
     }
 
     public void Restock(int water, int coffee, int milk, int sugar)
     {
-        WaterStock += water;
-        CoffeeStock += coffee;
-        MilkStock += milk;
-        SugarStock += sugar;
+        waterStock += water;
+        coffeeStock += coffee;
+        milkStock += milk;
+        sugarStock += sugar;
 
         Console.WriteLine("Запасы обновлены.");
     }
